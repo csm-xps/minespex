@@ -3,7 +3,8 @@ minespex
 ========
 
 
-High throughput, semi-automated X-ray photoemission spectroscopy (XPS) analysis tool.
+High throughput, semi-automated X-ray photoemission spectroscopy (XPS) analysis
+tool.
 
 
 Description

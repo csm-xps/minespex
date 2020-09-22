@@ -29,6 +29,7 @@ tags
 *.egg-info
 
 # Unittest and coverage
+tests/data/*
 htmlcov/*
 .coverage
 .tox

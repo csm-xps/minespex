@@ -1,4 +1,4 @@
-`minespex` is an application and a high-level python library enabling
+`minespex` is an application and high-level python library enabling
 high-throughput, semi-automated analysis of X-ray photoemission spectroscopy
 (XPS) data.
 

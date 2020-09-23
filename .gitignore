@@ -20,6 +20,7 @@ __pycache__/*
 .pydevproject
 .settings
 .idea
+.vscode
 tags
 
 # Package files
@@ -33,7 +34,7 @@ tests/data/*
 htmlcov/*
 .coverage
 .tox
-junit.xml
+junit*.xml
 coverage.xml
 .pytest_cache/
 
@@ -49,3 +50,7 @@ MANIFEST
 
 # Per-project virtualenvs
 .venv*/
+{}
+
+# Django
+/*.sqlite3

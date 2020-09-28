@@ -272,6 +272,7 @@ class Reader:
                 # data is 2D
                 self.region.data = data
 
+
     @classmethod
     def load(cls, fileobj):
         """Loads Scienta-formatted data.

@@ -1,0 +1,35 @@
+[Info]
+Number of Regions=0001
+Version=0.0.1
+
+[Region 1]
+Region Name=foo
+Dimension 1 name=Binding Energy [eV]
+Dimension 1 size=4
+Dimension 1 scale=624 625 626 627
+Dimension 2 name=Y-Scale [mm]
+Dimension 2 size=3
+Dimension 2 scale=1.234 5.678 9.012
+Dimension 3 name=Seq. Iteration[a.u.]
+Dimension 3 size=2
+Dimension 3 scale=1 2
+
+[Info 1]
+Region Name=foo
+Energy Step=1
+[Run Mode Information 1]
+Name=Add Dimension
+
+
+[Data 1:1]
+ 6.24e02 1.00e00 2.00e00 3.00e00
+ 6.25e02 4.00e00 5.00e00 6.00e00
+ 6.26e02 7.00e00 8.00e00 9.00e00
+ 6.27e02 1.00e01 1.10e01 1.20e01
+
+
+[Data 1:2]
+ 6.24e02 1.30e01 1.40e01 1.50e01
+ 6.25e02 1.60e01 1.70e01 1.80e01
+ 6.26e02 1.90e01 2.00e01 2.10e01
+ 6.27e02 2.20e01 2.30e01 2.40e01

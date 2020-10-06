@@ -30,7 +30,7 @@ tags
 *.egg-info
 
 # Unittest and coverage
-tests/data/*
+tests/data/NREL*
 htmlcov/*
 .coverage
 .tox
@@ -50,7 +50,6 @@ MANIFEST
 
 # Per-project virtualenvs
 .venv*/
-{}
 
 # Django
 /*.sqlite3

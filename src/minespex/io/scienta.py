@@ -104,7 +104,7 @@ class Reader:
                 else:
                     # add the line to the block contents (if not an empty line).
                     content = line.strip()
-                    if content != '':
+                    if content != '' and block is not None:
                         block.contents.append(content)
                 # keep track of the length of lines have been read. tell does
                 # not work when reading a file line-by-line.
@@ -144,6 +144,7 @@ class Reader:
             region = None
             inregion = False
             for block in self.blockiter:
+                
                 if block.name == "Region":
                     if not inregion:
                         inregion = True

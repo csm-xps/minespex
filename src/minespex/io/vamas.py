@@ -124,7 +124,7 @@ def vamas_from_file(filename:str):
             *lines
         ) = lines
 
-        # SHORTCUT
+        
         if (
             vamas["experiment mode"] in [
                 "MAPDP",
@@ -326,7 +326,7 @@ def vamas_from_file(filename:str):
             data = []
             (entry, *lines) = lines
             while entry != 'end of experiment':
-                data.append(int(entry))
+                data.append(float(entry))
                 (entry, *lines) = lines
             vamas[f'block #{each + 1} data'] = data
 
@@ -361,7 +361,7 @@ def vamas_to_spectra(vamas:dict):
     stop = int(start + (increment*(numValues-1)))
     scale = np.linspace(start, stop, int(numValues))
     scale = tuple(scale)
-    spectraVAMAS.set_dim(axis=1, name=f'{vamas["abscissa label"]} ({vamas["abscissa units"]})', scale=scale)
+    spectraVAMAS.set_dim(axis=1, name=f'{vamas["abscissa label"]} [{vamas["abscissa units"]}]', scale=scale)
 
     return spectraVAMAS
 

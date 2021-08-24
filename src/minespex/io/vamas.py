@@ -326,7 +326,7 @@ def vamas_from_file(filename:str):
             data = []
             (entry, *lines) = lines
             while entry != 'end of experiment':
-                data.append(entry)
+                data.append(int(entry))
                 (entry, *lines) = lines
             vamas[f'block #{each + 1} data'] = data
 
@@ -343,6 +343,8 @@ def vamas_to_spectra(vamas:dict):
 
     keys = ['experiment']
     keys.extend(blocksList)
+
+    # Take out keys for 'experiment' and block data because they are represented already
     attributes = {k:v for k,v in vamas.items() if k not in keys}
 
     data = []
@@ -350,6 +352,17 @@ def vamas_to_spectra(vamas:dict):
         data.append(vamas[block])
 
     spectraVAMAS = spectra.VAMAS(name=vamas['experiment'],attributes=attributes, data=np.asarray(data))
+
+    # Add dim data to fit spectra format
+    start = int(vamas['abscissa start'])
+    increment = float(vamas['abscissa increment'])
+    numValues = float(vamas['# of ordinate values'])
+
+    stop = int(start + (increment*(numValues-1)))
+    scale = np.linspace(start, stop, int(numValues))
+    scale = tuple(scale)
+    spectraVAMAS.set_dim(axis=1, name=f'{vamas["abscissa label"]} ({vamas["abscissa units"]})', scale=scale)
+
     return spectraVAMAS
 
 def read(filename: str):

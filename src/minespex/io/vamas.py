@@ -213,7 +213,7 @@ def vamas_from_file(filename:str):
             vamas["analysis source polar angle of incidence"],
             vamas["analysis source azimuth"],
             vamas["analyser mode"],
-            vamas["analyser pas energy/retard ratio/mass resolution"],
+            vamas["analyser pass energy/retard ratio/mass resolution"],
             *lines
         ) = lines
 
@@ -376,6 +376,7 @@ def read(filename: str):
 def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, foldername:str = ''):
     if foldername != '':
         foldername = f'{foldername}/'
+    
     fileFormatList =[]
 
     if isinstance(spectraObj, spectra.VAMAS):
@@ -494,7 +495,7 @@ def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, f
             spectraObj.attributes["analysis source polar angle of incidence"],
             spectraObj.attributes["analysis source azimuth"],
             spectraObj.attributes["analyser mode"],
-            spectraObj.attributes["analyser pas energy/retard ratio/mass resolution"]
+            spectraObj.attributes["analyser pass energy/retard ratio/mass resolution"]
         ]
         fileFormatList.extend(tempList)
 
@@ -669,7 +670,7 @@ def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, f
                     increment,
                     0,
                     'Unknown',
-                    float(spectraObj.attributes['Step Time'])/100.0,
+                    float(spectraObj.attributes['Step Time'])/1000.0,
                     spectraObj.attributes['Number of Sweeps'],
                     '1e+37',
                     '1e+37',
@@ -682,7 +683,7 @@ def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, f
                 fileFormatList.extend(data)
 
 
-                with open(f'{foldername}{filename}-y{yElement}-{timeStep}.vms', "w") as file_out:
+                with open(f'{foldername}{filename}-y{spectraObj.dim[dimKeys[0]].scale[yElement]}-{timeStep}.vms', "w") as file_out:
                     write = file_out.write
                     writeline = lambda line: file_out.write(f"{line}\n")
                     [writeline(item) for item in fileFormatList]

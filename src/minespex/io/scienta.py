@@ -1,7 +1,7 @@
 """Classes and functions to read Scienta-formatted data.
 """
 
-from ..base.spectra import Scienta
+from ..base.spectra import VAMAS, Scienta
 from ..base.util import as_basic_type
 from copy import deepcopy
 from io import StringIO
@@ -314,3 +314,182 @@ def read(filename):
     """
     with open(filename, 'r') as ifs:
         return Reader.load(ifs)
+
+def write_to_scienta(spectraObj: VAMAS or list, filename:str, foldername:str = ''): # No extention to filename
+    if foldername != '':
+        foldername = f'{foldername}/'
+
+    if spectraObj == []:
+        spectraObj.append(1)
+    
+    fileFormatList =[]
+    
+    if isinstance(spectraObj, list):
+        if isinstance(spectraObj[0], Scienta):
+
+            regions = len(spectraObj)
+            tempList = [
+                '[Info]',
+                f'Number of Regions={regions}',
+                'Version=Unknown',
+                ''
+            ]
+            fileFormatList.extend(tempList)
+
+            for numObj in range(len(spectraObj)):
+                obj = spectraObj[numObj]
+
+                fileFormatList.append(f'[Region {numObj+1}]')
+                fileFormatList.append(f'Region Name={obj.attributes["Region Name"]}')
+
+                numDim = len(obj.dim)/4
+                for eachDim in range(int(numDim)):
+                    scale = ''
+                    for each in obj.dim[eachDim+1].scale:
+                        scale = f'{scale} {each}'
+                    scale = scale[1:]
+                    tempList = [
+                        f'Dimension {eachDim+1} name={obj.dim[eachDim+1].name}',
+                        f'Dimension {eachDim+1} size={obj.dim[eachDim+1].size}',
+                        f'Dimension {eachDim+1} scale={scale}'
+                    ]
+                    fileFormatList.extend(tempList)
+                
+                tempList = [
+                    '',
+                    f'[Info {numObj}]',
+                    f'Region Name={obj.attributes["Region Name"]}',
+                    f'Lens Mode={obj.attributes["Lens Mode"]}',
+                    f'Pass Energy={obj.attributes["Pass Energy"]}',
+                    f'Number of Sweeps={obj.attributes["Number of Sweeps"]}',
+                    f'Excitation Energy={obj.attributes["Excitation Energy"]}',
+                    f'Energy Scale={obj.attributes["Energy Scale"]}',
+                    f'Acquisition Mode={obj.attributes["Acquisition Mode"]}',
+                    f'Energy Unit={obj.attributes["Energy Unit"]}',
+                    f'Center Energy={obj.attributes["Center Energy"]}',
+                    f'Low Energy={obj.attributes["Low Energy"]}',
+                    f'High Energy={obj.attributes["High Energy"]}',
+                    f'Step Time={obj.attributes["Step Time"]}',
+                    f'Detector First X-Channel={obj.attributes["Detector First X-Channel"]}',
+                    f'Detector Last X-Channel={obj.attributes["Detector Last X-Channel"]}',
+                    f'Detector First Y-Channel={obj.attributes["Detector First Y-Channel"]}',
+                    f'Detector Last Y-Channel={obj.attributes["Detector Last Y-Channel"]}',
+                    f'Number of Slices={obj.attributes["Number of Slices"]}',
+                    f'File={obj.attributes["File"]}',
+                    f'Sequence={obj.attributes["Sequence"]}',
+                    f'Spectrum Name={obj.attributes["Spectrum Name"]}',
+                    f'Instrument={obj.attributes["Instrument"]}',
+                    f'Location={obj.attributes["Location"]}',
+                    f'User={obj.attributes["User"]}',
+                    f'Sample={obj.attributes["Sample"]}',
+                    f'Comments={obj.attributes["Comments"]}',
+                    f'Date={obj.attributes["Date"]}',
+                    f'Time={obj.attributes["Time"]}',
+                    f'Time per Spectrum Channel={obj.attributes["Time per Spectrum Channel"]}',
+                    f'DetectorMode={obj.attributes["DetectorMode"]}',
+                    f'[Run Mode Information {numObj+1}]',
+                    f'Name={obj.attributes["Run Mode Information"]["Name"]}',
+                    '',
+                    '',
+                    ''
+                ]
+                fileFormatList.extend(tempList)
+
+                if numDim == 3:
+                    for block in obj.dim[3].scale:
+                        fileFormatList.append(f'[Data {numObj+1}:{int(block)}]')
+                        for eachRow in range(len(obj.dim[1].scale)):
+                            
+                            row = f'{obj.dim[1].scale[eachRow]}' 
+                            for eachCol in obj.data[eachRow,:,int(block-1)]:
+                                row = f'{row} {eachCol}'
+                            
+                            fileFormatList.append(row)
+                        fileFormatList.append('')
+
+            with open(f'{foldername}{filename}.txt', "w") as file_out:
+                    write = file_out.write
+                    writeline = lambda line: file_out.write(f"{line}\n")
+                    [writeline(item) for item in fileFormatList]
+
+            
+
+        elif isinstance(spectraObj[0], VAMAS):
+            print("VAMAS list")
+
+    elif isinstance(spectraObj, VAMAS):
+        print("VAMAS")
+
+        scale = ''
+        for each in spectraObj.dim[1].scale:
+            scale = f'{scale} {each}'
+        scale = scale[1:]
+
+        tempList = [
+                '[Info]',
+                f'Number of Regions=1',
+                'Version=Unknown',
+                '',
+                '[Region 1]',
+                f'Region Name={spectraObj.attributes["species label"]}',
+                f'Dimension 1 name={spectraObj.attributes["abscissa label"]} [{spectraObj.attributes["abscissa units"]}]',
+                f'Dimension 1 size={spectraObj.attributes["# of ordinate values"]}',
+                f'Dimension 1 scale={scale}',
+                f'Dimension 2 name=Measurement',
+                f'Dimension 2 size=1',
+                f'Dimension 2 scale=0',
+                '',
+                '[Info 1]',
+                f'Region Name={spectraObj.attributes["species label"]}',
+                f'Lens Mode=Unknown',
+                f'Pass Energy={spectraObj.attributes["analyser pass energy/retard ratio/mass resolution"]}',
+                f'Number of Sweeps={spectraObj.attributes["# of scans to compile this block"]}',
+                f'Excitation Energy={spectraObj.attributes["analysis source characteristic energy"]}',
+                'Energy Scale=Unknown',
+                'Acquisition Mode=Unknown',
+                'Energy Unit=Unknown',
+                'Center Energy=Unknown',
+                'Low Energy=Unknown',
+                'High Energy=Unknown',
+                f'Energy Step={abs(float(spectraObj.attributes["abscissa increment"]))}',
+                f'Step Time={float(spectraObj.attributes["signal collection time"])*1000}',
+                'Detector First X-Channel=Unknown',
+                'Detector Last X-Channel=Unknown',
+                'Detector First Y-Channel=1',
+                'Detector Last Y-Channel=1',
+                f'Number of Slices=1',
+                'File=Unknown',
+                'Sequence=Unknown',
+                f'Spectrum Name={spectraObj.attributes["species label"]}',
+                f'Instrument={spectraObj.attributes["instrument model"]}',
+                f'Location={spectraObj.attributes["institution"]}',
+                f'User={spectraObj.attributes["operator"]}',
+                f'Sample={spectraObj.attributes["sample id"]}',
+                f'Comments={spectraObj.attributes["comment"]}'
+            ]
+        fileFormatList.extend(tempList)
+
+        date, time = spectraObj.attributes["timestamp"].split(' ')
+        tempList = [
+            f'Date={date}',
+            f'Time={time}',
+            f'Time per Spectrum Channel=Unknown',
+            f'DetectorMode=Unknown',
+            '[Run Mode Information 1]',
+            'Name=Unknown',
+            '',
+            '',
+            '',
+            '[Data 1]'
+        ]
+        fileFormatList.extend(tempList)
+
+        for eachRow in range(len(spectraObj.dim[1].scale)):
+            fileFormatList.append(f'{spectraObj.dim[1].scale[eachRow]} {spectraObj.data[0,eachRow]}')
+
+        with open(f'{foldername}{filename}.txt', "w") as file_out:
+            write = file_out.write
+            writeline = lambda line: file_out.write(f"{line}\n")
+            [writeline(item) for item in fileFormatList]
+
+

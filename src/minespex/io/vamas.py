@@ -373,7 +373,12 @@ def read(filename: str):
     spectraVAMAS = vamas_to_spectra(vamasDict)
     return spectraVAMAS
 
-def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, foldername:str = ''):
+def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, foldername:str = '', overwriteFile:bool = False):
+    if overwriteFile:
+        writeFile = 'w'
+    else:
+        writeFile = 'x'
+
     if foldername != '':
         foldername = f'{foldername}/'
     
@@ -588,7 +593,7 @@ def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, f
             fileFormatList.extend(block)
             fileFormatList.append('end of experiment')
 
-        with open(f'{foldername}{filename}.vms', "w") as file_out:
+        with open(f'{foldername}{filename}.vms', writeFile) as file_out:
             write = file_out.write
             writeline = lambda line: file_out.write(f"{line}\n")
             [writeline(item) for item in fileFormatList]
@@ -683,7 +688,7 @@ def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, f
                 fileFormatList.extend(data)
 
 
-                with open(f'{foldername}{filename}-y{spectraObj.dim[dimKeys[0]].scale[yElement]}-{timeStep}.vms', "w") as file_out:
+                with open(f'{foldername}{filename}-y{spectraObj.dim[dimKeys[0]].scale[yElement]}-{timeStep}.vms', writeFile) as file_out:
                     write = file_out.write
                     writeline = lambda line: file_out.write(f"{line}\n")
                     [writeline(item) for item in fileFormatList]

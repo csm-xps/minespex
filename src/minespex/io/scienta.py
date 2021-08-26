@@ -315,7 +315,12 @@ def read(filename):
     with open(filename, 'r') as ifs:
         return Reader.load(ifs)
 
-def write_to_scienta(spectraObj: VAMAS or list, filename:str, foldername:str = ''): # No extention to filename
+def write_to_scienta(spectraObj: VAMAS or list, filename:str, foldername:str = '', overwriteFile:bool=False): # No extention to filename
+    if overwriteFile:
+        writeFile = 'w'
+    else:
+        writeFile = 'x'
+    
     if foldername != '':
         foldername = f'{foldername}/'
 
@@ -407,7 +412,7 @@ def write_to_scienta(spectraObj: VAMAS or list, filename:str, foldername:str = '
                             fileFormatList.append(row)
                         fileFormatList.append('')
 
-            with open(f'{foldername}{filename}.txt', "w") as file_out:
+            with open(f'{foldername}{filename}.txt', writeFile) as file_out:
                     write = file_out.write
                     writeline = lambda line: file_out.write(f"{line}\n")
                     [writeline(item) for item in fileFormatList]
@@ -487,7 +492,7 @@ def write_to_scienta(spectraObj: VAMAS or list, filename:str, foldername:str = '
         for eachRow in range(len(spectraObj.dim[1].scale)):
             fileFormatList.append(f'{spectraObj.dim[1].scale[eachRow]} {spectraObj.data[0,eachRow]}')
 
-        with open(f'{foldername}{filename}.txt', "w") as file_out:
+        with open(f'{foldername}{filename}.txt', writeFile) as file_out:
             write = file_out.write
             writeline = lambda line: file_out.write(f"{line}\n")
             [writeline(item) for item in fileFormatList]

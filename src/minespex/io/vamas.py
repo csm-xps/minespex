@@ -118,20 +118,20 @@ def vamas_from_file(filename:str):
                 vamas[f'experimental variable value #{var + 1}'],
                 *lines
             ) = lines
-        
+
         (
             vamas["analysis source label"],
             *lines
         ) = lines
 
-        
+
         if (
             vamas["experiment mode"] in [
                 "MAPDP",
                 "MAPSVDP",
                 "SDP",
                 "SDPSV"
-            ] or 
+            ] or
             vamas["technique"] in [
                 "FABMS",
                 "FABMS energy spec",
@@ -219,7 +219,7 @@ def vamas_from_file(filename:str):
 
         if vamas["technique"] == 'AES diff':
             (
-                vamas["differential width"], 
+                vamas["differential width"],
                 *lines
             ) = lines
 
@@ -381,7 +381,7 @@ def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, f
 
     if foldername != '':
         foldername = f'{foldername}/'
-    
+
     fileFormatList =[]
 
     if isinstance(spectraObj, spectra.VAMAS):
@@ -692,5 +692,3 @@ def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, f
                     write = file_out.write
                     writeline = lambda line: file_out.write(f"{line}\n")
                     [writeline(item) for item in fileFormatList]
-    
-

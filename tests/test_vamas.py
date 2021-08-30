@@ -1,10 +1,25 @@
 import pytest
 import numpy as np
 from numpy.core.numeric import allclose
-from minespex.io import vamas
+from minespex.io import vamas, scienta
 
-def test_read():
-    vamasSpectra = vamas.read('minespex/tests/data/vamas.vms')
+@pytest.fixture
+def input_filename():
+    return "data/vamas.vms"
+
+
+@pytest.fixture
+def vamas_output():
+    return "data/vamas-out.vms"
+
+
+@pytest.fixture
+def scienta_output():
+    return "data/scienta-out.txt"
+
+
+def test_read(input_filename):
+    vamasSpectra = vamas.read(input_filename)
 
     assert vamasSpectra.name == "O1s_Sect_Sect", "Incorrect name"
     assert int(vamasSpectra.attributes['# of ordinate values']) == int(vamasSpectra.size(1))
@@ -16,7 +31,7 @@ def test_read():
 
     # Assert data is present and correct
     assert allclose(
-        vamasSpectra.data, 
+        vamasSpectra.data,
         [[
             50811.5,
             49890.7,
@@ -130,3 +145,9 @@ def test_read():
             49764.1,
             51161.9
         ]])
+
+
+def test_write(input_filename, vamas_output, scienta_output):
+    spectra = vamas.read(input_filename)
+    vamas.write_to_vamas(vamas_output, spectra)
+    scienta.write_to_scienta(scienta_output, spectra)

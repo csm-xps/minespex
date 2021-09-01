@@ -148,6 +148,8 @@ def test_read(input_filename):
 
 
 def test_write(input_filename, vamas_output, scienta_output):
-    spectra = vamas.read(input_filename)
-    vamas.write_to_vamas(vamas_output, spectra)
-    scienta.write_to_scienta(scienta_output, spectra)
+    spectraVamas = vamas.read(input_filename)
+    print(spectraVamas.attributes)
+    vamas.write_to_vamas(spectraVamas, vamas_output)
+    scienta.write_to_scienta(spectraVamas, scienta_output)
+    return spectraVamas

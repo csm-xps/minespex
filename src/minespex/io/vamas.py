@@ -373,14 +373,14 @@ def read(filename: str):
     spectraVAMAS = vamas_to_spectra(vamasDict)
     return spectraVAMAS
 
-def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, foldername:str = '', overwriteFile:bool = False):
+def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, overwriteFile:bool = False):
     if overwriteFile:
         writeFile = 'w'
     else:
         writeFile = 'x'
 
-    if foldername != '':
-        foldername = f'{foldername}/'
+    foldername = ''
+    
 
     fileFormatList =[]
 
@@ -593,15 +593,20 @@ def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, f
             fileFormatList.extend(block)
             fileFormatList.append('end of experiment')
 
-        with open(f'{foldername}{filename}.vms', writeFile) as file_out:
+        with open(f'{foldername}{filename}', writeFile) as file_out:
             write = file_out.write
             writeline = lambda line: file_out.write(f"{line}\n")
             [writeline(item) for item in fileFormatList]
 
     elif isinstance(spectraObj, spectra.Scienta):
+        filename, extension = filename.split('.')
+        foldername = f'{filename}/'
+        filename = ''
         yLength = spectraObj.data.shape[1]
+        
         timeStepLength = spectraObj.data.shape[2] if len(spectraObj.data.shape) == 3 else 1
         for yElement in range(yLength):
+            
             for timeStep in range(timeStepLength):
                 fileFormatList = []
 
@@ -663,10 +668,10 @@ def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, f
                 fileFormatList.extend(tempList)
 
                 dimKeys = list(spectraObj.dim.keys())
-                label, units =spectraObj.dim[dimKeys[0]].name.split(' [')
+                label, units =spectraObj.dim[1].name.split(' [')
                 units = units[:-1]
-                start = float(spectraObj.dim[dimKeys[0]].scale[0])
-                increment = start-float(spectraObj.dim[dimKeys[0]].scale[1])
+                start = float(spectraObj.dim[1].scale[0])
+                increment = start-float(spectraObj.dim[1].scale[1])
 
                 tempList = [
                     label,
@@ -687,8 +692,10 @@ def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, f
                 data = list(spectraObj.data[:,yElement,timeStep])
                 fileFormatList.extend(data)
 
-
-                with open(f'{foldername}{filename}-y{spectraObj.dim[dimKeys[0]].scale[yElement]}-{timeStep}.vms', writeFile) as file_out:
+                yString = str({spectraObj.dim[2].scale[yElement]})
+                yString = yString.replace('.',',')
+                yString = yString[1:7]
+                with open(f'{foldername}{filename}y({yString})-{timeStep}.{extension}', writeFile) as file_out:
                     write = file_out.write
                     writeline = lambda line: file_out.write(f"{line}\n")
                     [writeline(item) for item in fileFormatList]

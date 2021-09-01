@@ -5,8 +5,15 @@ import numpy as np
 
 
 def vamas_from_file(filename:str):
-    # Read in .vms file and input into dictionary
+    """ Read in .vms file and input into dictionary
 
+        Parameters:
+            filename(str): Name of file read from
+
+        Returns:
+            Dictionary of all important information from VAMAS file
+
+    """
     vamas = {}
 
     with open(filename, 'r') as file:
@@ -334,8 +341,15 @@ def vamas_from_file(filename:str):
     return vamas
 
 def vamas_to_spectra(vamas:dict):
-    # Take VAMAS dictionary and return spectra class object
+    """ Take VAMAS dictionary and return spectra class object
 
+        Parameters:
+            vamas(dict): Dictionary of information taken from vamas file format
+
+        Returns:
+            Spectra(VAMAS): Spectra subclass VAMAS
+
+    """
     blocksList =[]
     for key, value in vamas.items():
 
@@ -367,13 +381,36 @@ def vamas_to_spectra(vamas:dict):
     return spectraVAMAS
 
 def read(filename: str):
-    # Read in .vms file and output spectra class object
+    """ Read in .vms file and output spectra class object
+
+        Parmeters:
+            filename (str): Filename including extension to be read in
+
+
+        Returns:
+            Spectra(VAMAS): Spectra subclass VAMAS which includes all important information from the document read
+
+    """
 
     vamasDict = vamas_from_file(filename)
     spectraVAMAS = vamas_to_spectra(vamasDict)
     return spectraVAMAS
 
 def write_to_vamas(spectraObj: spectra.VAMAS or spectra.Scienta, filename:str, overwriteFile:bool = False):
+    """ Take in a Spectra object and write to a VAMAS file format
+
+        Parameters:
+            spectraObj (Spectra(VAMAS) or Spectra(Scienta)): Spectra object
+            filename (str): Name of file to write to including extensions
+            overwrite (bool): Argument to determine if files already existing should be overwritten.
+                Defaults to False, meaning files will not be overwriten.
+
+        Returns:
+            None
+
+    """
+
+
     if overwriteFile:
         writeFile = 'w'
     else:

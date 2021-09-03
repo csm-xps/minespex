@@ -1,0 +1,41 @@
+[Info]
+Number of Regions=0002
+Version=1.3.1
+
+[Region 1]
+Region Name=foo
+Dimension 1 name=Binding Energy [eV]
+Dimension 1 size=2
+Dimension 1 scale=624 625
+Dimension 2 name=Y-Scale [mm]
+Dimension 2 size=2
+Dimension 2 scale=1.234 5.678
+
+[Info 1]
+Region Name=foo
+Energy Step=1
+[Run Mode Information 1]
+
+
+[Data 1]
+ 6.24e02 1.00e00 2.00e00
+ 6.25e02 3.00e00 4.00e00
+
+[Region 2]
+Region Name=bar
+Dimension 1 name=Binding Energy [eV]
+Dimension 1 size=2
+Dimension 1 scale=148 148.5
+Dimension 2 name=Y-Scale [mm]
+Dimension 2 size=2
+Dimension 2 scale=9.012 3.456
+
+[Info 2]
+Region Name=bar
+Energy Step=0.5
+[Run Mode Information 2]
+
+
+[Data 2]
+  1.480e02 5.00e00 6.00e00
+  1.485e02 7.00e00 8.00e00

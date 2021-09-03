@@ -256,3 +256,17 @@ class Scienta(Spectra):
         except KeyError:
             return None
     axis.__doc__ = Spectra.axis.__doc__
+
+class VAMAS(Spectra):
+
+    def axis(self, key):
+        try:
+            return self.dim[key].axis-1
+        except KeyError:
+            return None
+    axis.__doc__ = Spectra.axis.__doc__
+
+    def __init__(self, name, attributes, data):
+        super().__init__(name=name)
+        self.attributes=attributes
+        self.data = data
